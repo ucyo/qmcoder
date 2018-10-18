@@ -22,7 +22,7 @@ class Encoder(object):
 
     @property
     def Qe(self):
-        return self.table.qe
+        return np.uint32(self.table.qe)
 
 
     def encode(value):

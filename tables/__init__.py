@@ -15,7 +15,7 @@ JPEG_TABLE = pd.read_csv(os.path.join(_bf, 'jpeg.csv'), index_col=0,
 
 ILLUSTRIVE_TABLE = pd.read_csv(os.path.join(_bf, 'illustrative.csv'), index_col=0,
                                converters={'qe':lambda x: int(x, 16), 'exmps': lambda x: bool(int(x))},
-                               dtype={x:'int8' for x in ['ix', 'nlps', 'nmps']}
+                               dtype={x:'uint8' for x in ['ix', 'nlps', 'nmps']}
                                )
 
 
