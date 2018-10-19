@@ -154,3 +154,16 @@ class Encoder(object):
 
         result = "\t".join([str(x) for x in result])
         return result
+
+
+if __name__ == "__main__":
+    from tests import test
+    from tables import JPEGProbabilityTable
+
+    ptable = JPEGProbabilityTable()
+    enc = Encoder(ptable)
+
+    print("\t".join(["EC","D","MPS","CX","{:7}".format("Qe"),"{:7}".format("A"),"{:8}".format("C"),"CT","ST","B"]))
+    for val in test[:6]:
+        print(enc)
+        enc.encode(val)
