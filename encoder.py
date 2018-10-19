@@ -69,4 +69,11 @@ class Encoder(object):
         self.table.update_using_mps()
 
     def renorm_e(self):
-        pass
+        self.A = np.left_shift(self.A, 1)
+        self.C = np.left_shift(self.C, 1)
+        self.CT -= 1
+        if self.CT == 0:
+            self.byte_out()
+            self.CT = 8
+        if self.A < self.threequarter:
+            self.renorm_e()
