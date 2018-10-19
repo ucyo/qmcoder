@@ -51,10 +51,9 @@ class Encoder(object):
         self.renorm_e()
 
     def estimate_Qe_after_lps(self):
-        pass
-
-    def renorm_e(self):
-        pass
+        if self.table.is_exchange_needed:
+            self.MPS = 1 - self.MPS
+        self.update_using_lps()
 
     def code_mps(self):
         self.A -= self.Qe
@@ -67,4 +66,7 @@ class Encoder(object):
         self.renorm_e()
 
     def estimate_Qe_after_mps():
+        self.table.update_using_mps()
+
+    def renorm_e(self):
         pass
