@@ -20,6 +20,10 @@ class Encoder(object):
         self.Bx    = None
         self.B     = None
 
+        # temporary attributes for byte_out()
+        self.BP = 0
+        self.ST = 0
+
     @property
     def Qe(self):
         return np.uint32(self.table.qe)
@@ -77,3 +81,28 @@ class Encoder(object):
             self.CT = 8
         if self.A < self.threequarter:
             self.renorm_e()
+
+    def byte_out(self):
+        T = np.right_shift(self.C, 19)
+        if T > 0xFF:
+            self.B += 1
+            self.stuff_0()
+            self.output_stacked_zeros()
+            self.BP += 1
+            self.B = T
+        if not T == 0xFF:
+            self.output_stacked_xffs()
+            self.BP += 1
+            self.B = T
+        else:
+            self.ST += 1
+        self.C = np.bitwise_and(self.C, 0x7FFFF)
+
+    def stuff_0(self):
+        pass
+
+    def output_stacked_zeros():
+        pass
+
+    def output_stacked_xffs():
+        pass
