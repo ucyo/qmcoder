@@ -21,8 +21,9 @@ class Encoder(object):
         self.B     = None
 
         # temporary attributes for byte_out()
-        self.BP = 0  # supposed to be BPST - 1
-        self.ST = 0
+        self.BPST = 0
+        self.BP   = self.BPST - 1
+        self.ST   = 0
 
     @property
     def Qe(self):
@@ -126,7 +127,17 @@ class Encoder(object):
         self.discard_final_zeros()
 
     def clear_final_bits(self):
-        pass
+        T = self.C + self.A - 1
+        T = np.bitwise_and(self.T, 0xFFFF0000)
+        if T < self.C:
+            T += self.threequarter
+        self.C = T
 
     def discard_final_zeros(self):
-        pass
+        if self.BP < self.BPST:
+            return
+        if self.B == 0:
+            self.BP -= 1
+            self.discard_final_zeros()
+        if self.B == 0xFF:
+            self.BP += 1
