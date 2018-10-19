@@ -169,3 +169,6 @@ if __name__ == "__main__":
     for val in test[:int(sys.argv[1])]:
         print(enc)
         enc.encode(val)
+    enc.flush()
+    print("OUT", "0xff")
+    print("OUT", "0xd9")
