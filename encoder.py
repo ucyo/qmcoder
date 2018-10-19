@@ -53,14 +53,14 @@ class Encoder(object):
         self.A -= self.Qe
         if not self.A < self.Qe:
             self.C += self.A
-            self.A = self.C
+            self.A = self.Qe
         self.estimate_Qe_after_lps()
         self.renorm_e()
 
     def estimate_Qe_after_lps(self):
         if self.table.is_exchange_needed:
             self.MPS = 1 - self.MPS
-        self.update_using_lps()
+        self.table.update_using_lps()
 
     def code_mps(self):
         self.A -= self.Qe
@@ -68,7 +68,7 @@ class Encoder(object):
             return
         if self.A < self.Qe:
             self.C += self.A
-            self.A = self.C
+            self.A = self.Qe
         self.estimate_Qe_after_mps()
         self.renorm_e()
 
@@ -157,6 +157,7 @@ class Encoder(object):
 
 
 if __name__ == "__main__":
+    import sys
     from tests import test
     from tables import JPEGProbabilityTable
 
@@ -164,6 +165,6 @@ if __name__ == "__main__":
     enc = Encoder(ptable)
 
     print("\t".join(["EC","D","MPS","CX","{:7}".format("Qe"),"{:7}".format("A"),"{:8}".format("C"),"CT","ST","B"]))
-    for val in test[:6]:
+    for val in test[:int(sys.argv[1])]:
         print(enc)
         enc.encode(val)
