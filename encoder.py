@@ -9,8 +9,8 @@ class Encoder(object):
 
     def __init__(self, probTable):
         self.table = probTable
-        self.EC    = 0
-        self.D     = None
+        self.EC    = 1
+        self.D     = 0
         self.MPS   = 0
         self.CX    = None
         self.A     = np.uint32(0x10000)
@@ -46,6 +46,8 @@ class Encoder(object):
             self.code_mps()
         else:
             self.code_lps()
+        self.EC += 1    # for printing purposes
+        self.D = value  # for printing purposes
 
     def code_lps(self):
         self.A -= self.Qe
@@ -141,3 +143,14 @@ class Encoder(object):
             self.discard_final_zeros()
         if self.B == 0xFF:
             self.BP += 1
+
+    def __repr__(self):
+        result = [self.EC, self.D, self.MPS, self.table.is_exchange_needed,
+                  "0x{}".format(hex(self.Qe)[2:].zfill(5).upper()),
+                  "0x{}".format(hex(self.A)[2:].zfill(5).upper()),
+                  "0x{}".format(hex(self.C)[2:].zfill(8).upper()),
+                  self.CT, self.ST,
+                  self.B]
+
+        result = "\t".join([str(x) for x in result])
+        return result
