@@ -99,10 +99,20 @@ class Encoder(object):
         self.C = np.bitwise_and(self.C, 0x7FFFF)
 
     def stuff_0(self):
-        pass
+        if self.B == 0xFF:
+            self.BP += 1
+            self.B = 0
 
     def output_stacked_zeros():
-        pass
+        while self.ST != 0:
+            self.BP += 1   # current location of output byte?
+            self.B = 0     # this should be written on disk?
+            self.ST -= 1
 
     def output_stacked_xffs():
-        pass
+        while self.ST != 0:
+            self.BP += 1
+            self.B = 0xFF  # this should be written on disk?
+            self.BP += 1
+            self.B = 0     # this should be written on disk?
+            self.ST -= 1
