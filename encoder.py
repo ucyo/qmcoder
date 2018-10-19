@@ -145,12 +145,13 @@ class Encoder(object):
             self.BP += 1
 
     def __repr__(self):
+        str_B = "0x{}".format(hex(self.B)[2:].zfill(2).upper()) if self.B else None
         result = [self.EC, self.D, self.MPS, self.table.is_exchange_needed,
                   "0x{}".format(hex(self.Qe)[2:].zfill(5).upper()),
                   "0x{}".format(hex(self.A)[2:].zfill(5).upper()),
                   "0x{}".format(hex(self.C)[2:].zfill(8).upper()),
-                  self.CT, self.ST,
-                  self.B]
+                  self.CT, self.ST, str_B
+                  ]
 
         result = "\t".join([str(x) for x in result])
         return result
