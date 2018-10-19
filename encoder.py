@@ -13,7 +13,7 @@ class Encoder(object):
         self.D     = None
         self.MPS   = 0
         self.CX    = None
-        self.A     = np.uint32(0)
+        self.A     = np.uint32(0x10000)
         self.C     = np.uint32(0)
         self.CT    = 11
         self.ST    = 0
@@ -21,7 +21,7 @@ class Encoder(object):
         self.B     = None
 
         # temporary attributes for byte_out()
-        self.BP = 0
+        self.BP = 0  # supposed to be BPST - 1
         self.ST = 0
 
     @property
