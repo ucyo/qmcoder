@@ -24,6 +24,17 @@ class Encoder(object):
     def Qe(self):
         return np.uint32(self.table.qe)
 
+    @property
+    def one(self):
+        return np.uint32(self.table.one)
+
+    @property
+    def threequarter(self):
+        return np.uint32(self.table.threequarter)
+
+    @property
+    def half(self):
+        return np.uint32(self.table.half)
 
     def encode(value):
         if value == self.MPS:
