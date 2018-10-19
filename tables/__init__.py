@@ -31,11 +31,11 @@ class JPEGProbabilityTable(object):
 
     @property
     def threequarter(self):
-        return int((self.one//(4/3))+1)
+        return 0x8000
 
     @property
     def half(self):
-        return self.one//2+1
+        return 0x5AAE
 
     @property
     def qe(self):
@@ -64,11 +64,11 @@ class IllustrativeProbabilityTable(object):
 
     @property
     def threequarter(self):
-        return int((self.one//(4/3))+1)
+        return 0x8000
 
     @property
     def half(self):
-        return self.one//2+1
+        return 0x5556
 
     @property
     def qe(self):
