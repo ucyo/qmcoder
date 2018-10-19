@@ -41,10 +41,10 @@ class JPEGProbabilityTable(object):
     def qe(self):
         return self.table['qe'][self.index]
 
-    def update_mps(self):
+    def update_using_mps(self):
         self.index = self.table['nmps'][self.index]
 
-    def update_lps(self):
+    def update_using_lps(self):
         self.index = self.table['nlps'][self.index]
 
     @property
@@ -74,10 +74,10 @@ class IllustrativeProbabilityTable(object):
     def qe(self):
         return self.table['qe'][self.index]
 
-    def update_mps(self):
+    def update_using_mps(self):
         self.index += self.table['nmps'][self.index]
 
-    def update_lps(self):
+    def update_using_lps(self):
         self.index += self.table['nlps'][self.index]
 
     @property
