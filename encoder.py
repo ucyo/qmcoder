@@ -17,7 +17,7 @@ class Encoder(object):
         self.C     = np.uint32(0)
         self.CT    = 11
         self.ST    = 0
-        self.Bx    = None
+        self.Bx    = False
         self.B     = None
 
         # temporary attributes for byte_out()
@@ -93,10 +93,15 @@ class Encoder(object):
             self.output_stacked_zeros()
             self.BP += 1
             self.B = T
+            self.Bx = True
         if not T == 0xFF:
             self.output_stacked_xffs()
             self.BP += 1
             self.B = T
+            # FIXIT workaround for carrying bit
+            if self.B != 0 and not self.Bx: print("OUT", hex(self.B))
+            if self.B != 0 and self.Bx: print("OUT", hex(0))
+            self.Bx = False
         else:
             self.ST += 1
         self.C = np.bitwise_and(self.C, 0x7FFFF)
@@ -105,19 +110,25 @@ class Encoder(object):
         if self.B == 0xFF:
             self.BP += 1
             self.B = 0
+            print("OUT", hex(self.B))
+
 
     def output_stacked_zeros(self):
         while self.ST != 0:
-            self.BP += 1   # current location of output byte?
-            self.B = 0     # this should be written on disk?
+            self.BP += 1
+            self.B = 0
+            print("OUT", hex(self.B))
             self.ST -= 1
+
 
     def output_stacked_xffs(self):
         while self.ST != 0:
             self.BP += 1
-            self.B = 0xFF  # this should be written on disk?
+            self.B = 0xFF
+            print("OUT", hex(self.B))
             self.BP += 1
-            self.B = 0     # this should be written on disk?
+            self.B = 0
+            print("OUT", hex(self.B))
             self.ST -= 1
 
     def flush(self):
@@ -150,7 +161,7 @@ class Encoder(object):
                   "0x{}".format(hex(self.Qe)[2:].zfill(5).upper()),
                   "0x{}".format(hex(self.A)[2:].zfill(5).upper()),
                   "0x{}".format(hex(self.C)[2:].zfill(8).upper()),
-                  self.CT, self.ST, str_B
+                  self.CT, self.ST, self.Bx, str_B
                   ]
 
         result = "\t".join([str(x) for x in result])
@@ -165,7 +176,8 @@ if __name__ == "__main__":
     ptable = JPEGProbabilityTable()
     enc = Encoder(ptable)
 
-    print("\t".join(["EC","D","MPS","CX","{:7}".format("Qe"),"{:7}".format("A"),"{:8}".format("C"),"CT","ST","B"]))
+    print("\t".join(["EC","D","MPS","CX","{:7}".format("Qe"),
+                     "{:7}".format("A"),"{:8}".format("C"),"CT","ST","Bx","B"]))
     for val in test[:int(sys.argv[1])]:
         print(enc)
         enc.encode(val)
