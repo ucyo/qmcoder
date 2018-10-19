@@ -41,3 +41,17 @@ class Encoder(object):
             self.code_mps()
         else:
             self.code_lps()
+
+    def code_lps(self):
+        self.A -= self.Qe
+        if not self.A < self.Qe:
+            self.C += self.A
+            self.A = self.C
+        self.estimate_Qe_after_lps()
+        self.renorm_e()
+
+    def estimate_Qe_after_lps(self):
+        pass
+
+    def renorm_e(self):
+        pass
