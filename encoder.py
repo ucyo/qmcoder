@@ -55,3 +55,16 @@ class Encoder(object):
 
     def renorm_e(self):
         pass
+
+    def code_mps(self):
+        self.A -= self.Qe
+        if not self.A < self.threequarter:
+            return
+        if self.A < self.Qe:
+            self.C += self.A
+            self.A = self.C
+        self.estimate_Qe_after_mps()
+        self.renorm_e()
+
+    def estimate_Qe_after_mps():
+        pass
