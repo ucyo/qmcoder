@@ -116,3 +116,17 @@ class Encoder(object):
             self.BP += 1
             self.B = 0     # this should be written on disk?
             self.ST -= 1
+
+    def flush(self):
+        self.clear_final_bits()
+        self.C = np.left_shift(self.C, self.CT)
+        self.byte_out()
+        self.C = np.left_shift(self.C, 8)
+        self.byte_out()
+        self.discard_final_zeros()
+
+    def clear_final_bits(self):
+        pass
+
+    def discard_final_zeros(self):
+        pass
