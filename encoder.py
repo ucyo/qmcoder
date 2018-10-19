@@ -41,7 +41,7 @@ class Encoder(object):
     def half(self):
         return np.uint32(self.table.half)
 
-    def encode(value):
+    def encode(self, value):
         if value == self.MPS:
             self.code_mps()
         else:
@@ -70,7 +70,7 @@ class Encoder(object):
         self.estimate_Qe_after_mps()
         self.renorm_e()
 
-    def estimate_Qe_after_mps():
+    def estimate_Qe_after_mps(self):
         self.table.update_using_mps()
 
     def renorm_e(self):
