@@ -176,10 +176,10 @@ if __name__ == "__main__":
     ptable = JPEGProbabilityTable()
     enc = Encoder(ptable)
 
-    print("\t".join(["EC","D","MPS","CX","{:7}".format("Qe"),
-                     "{:7}".format("A"),"{:8}".format("C"),"CT","ST","Bx","B"]))
+    # print("\t".join(["EC","D","MPS","CX","{:7}".format("Qe"),
+                     # "{:7}".format("A"),"{:8}".format("C"),"CT","ST","Bx","B"]))
     for val in test[:int(sys.argv[1])]:
-        print(enc)
+        # print(enc)
         enc.encode(val)
     enc.flush()
     print("OUT", "0xff")
