@@ -130,7 +130,7 @@ class Encoder(object):
 
     def clear_final_bits(self):
         T = self.C + self.A - 1
-        T = np.bitwise_and(self.T, 0xFFFF0000)
+        T = np.bitwise_and(T, 0xFFFF0000)
         if T < self.C:
             T += self.threequarter
         self.C = T
