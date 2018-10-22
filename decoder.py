@@ -7,8 +7,9 @@ import numpy as np
 
 class Decoder(object):
 
-    def __init__(self, table):
+    def __init__(self, table, file):
         self.table = table
+        self.file  = file
         self.C     = np.uint32(0x0)
         self.A     = np.uint32(0x10000)
         self.BPST  = 0
@@ -49,6 +50,7 @@ class Decoder(object):
 
     def byte_in(self):
         self.BP += 1
+        self.B = self.file[0]; self.file = self.file[1:]
         if self.B == 0xFF:
             self.unstuff_0()
         else:
