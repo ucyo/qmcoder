@@ -30,11 +30,11 @@ class Decoder(object):
 
     @property
     def Qe(self):
-        return np.uint32(self.table.qe)
+        return np.uint16(self.table.qe)
 
     @property
     def Cx(self):
-        return np.bitwise_and(self.C, 0xFFFF0000)
+        return np.right_shift(self.C, 16)
 
     @property
     def Clow(self):
@@ -42,15 +42,15 @@ class Decoder(object):
 
     @property
     def one(self):
-        return np.uint32(self.table.one)
+        return np.uint16(self.table.one)
 
     @property
     def threequarter(self):
-        return np.uint32(self.table.threequarter)
+        return np.uint16(self.table.threequarter)
 
     @property
     def half(self):
-        return np.uint32(self.table.half)
+        return np.uint16(self.table.half)
 
     def byte_in(self):
         self.BP += 1
@@ -61,10 +61,13 @@ class Decoder(object):
             self.C += np.left_shift(self.B, 8)
 
     def unstuff_0(self):
+        print('in', self.B)
         self.BP += 1
         if self.B == 0:
             self.C = np.logical_or(self.C, 0xFF00)
         else:
+            self.C += 0xFF00
+            self.byte_in()
             pass# (interpret marker)
             # Adjust BP
             # write zeros until end of decoding
@@ -87,13 +90,11 @@ class Decoder(object):
     def cond_LPS_exchange(self):
         if self.A < self.Qe:
             D = self.MPS
-            # self.Cx -= self.A
             self.C -= np.left_shift(self.A, 16)
             self.A = self.Qe
             self.estimate_qe_after_mps()
         else:
             D = 1 - self.MPS
-            # self.Cx -= self.A
             self.C -= np.left_shift(self.A, 16)
             self.A = self.Qe
             self.estimate_qe_after_lps()
@@ -127,7 +128,7 @@ class Decoder(object):
         self.table.update_using_mps()
 
     def __repr__(self):
-        str_B = "0x{}".format(hex(self.B)[2:].zfill(2).upper()) if self.B else None
+        str_B = "0x{}".format(hex(self.B)[2:].zfill(2).upper()) if self.B else self.B
         result = [self.EC, self.D, self.MPS, self.table.is_exchange_needed,
                   "0x{}".format(hex(self.Qe)[2:].zfill(5).upper()),
                   "0x{}".format(hex(self.A)[2:].zfill(5).upper()),
@@ -140,6 +141,7 @@ class Decoder(object):
 
 if __name__ == "__main__":
     import sys
+    import bitstring as bs
     from tests import expected
     from tables import JPEGProbabilityTable
 
@@ -148,7 +150,10 @@ if __name__ == "__main__":
 
     print("\t".join(["EC","D","MPS","CX","{:7}".format("Qe"),
                      "{:7}".format("A"),"{:8}".format("C"),"CT","B"]))
+
+    bits = bs.BitArray()
     for val in range(int(sys.argv[1])):
         print(dec)
         v = dec.decode()
-        # print(v)
+        bits.append(bin(v))
+    print([bits.hex[i:i+8] for i in range(0,len(bits.hex),8)])
