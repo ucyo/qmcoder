@@ -63,7 +63,7 @@ class Decoder(object):
     def unstuff_0(self):
         self.BP += 1
         if self.B == 0:
-            self.C = np.logical_or(C, 0xFF00)
+            self.C = np.logical_or(self.C, 0xFF00)
         else:
             pass# (interpret marker)
             # Adjust BP
@@ -72,7 +72,8 @@ class Decoder(object):
     def decode(self):
         self.EC += 1
         self.A -= self.Qe
-        if not self.A < self.Cx:
+        if not self.Cx < self.A:
+            # print(1, hex(self.C))
             D = self.cond_LPS_exchange()
             self.renorm_d()
             return
