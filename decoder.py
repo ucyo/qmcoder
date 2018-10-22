@@ -13,6 +13,7 @@ class Decoder(object):
         self.A     = np.uint32(0x10000)
         self.BPST  = 0
         self.BP    = self.BPST - 1
+        self.MPS   = 0
 
         self.byte_in()
         self.C = np.left_shift(self.C, 8)
@@ -24,7 +25,7 @@ class Decoder(object):
 
     @property
     def Qe(self):
-        return np.uint16(self.table.qe)
+        return np.uint32(self.table.qe)
 
     @property
     def Cx(self):
@@ -33,6 +34,18 @@ class Decoder(object):
     @property
     def Clow(self):
         return np.bitwise_and(self.C, 0x0000FFFF)
+
+    @property
+    def one(self):
+        return np.uint32(self.table.one)
+
+    @property
+    def threequarter(self):
+        return np.uint32(self.table.threequarter)
+
+    @property
+    def half(self):
+        return np.uint32(self.table.half)
 
     def byte_in(self):
         self.BP += 1
@@ -49,3 +62,16 @@ class Decoder(object):
             # (interpret marker)
             # Adjust BP
             # write zeros until end of decoding
+
+    def decode(self):
+        self.A -= self.Qe
+        if not self.A < self.Cx:
+            D = self.cond_LPS_exchange()
+            self.renorm_d()
+            return
+        if self.A < self.threequarter:
+            D = self.cond_MPS_exchange()
+            self.renorm_d()
+        else:
+            D = self.MPS
+        return D
