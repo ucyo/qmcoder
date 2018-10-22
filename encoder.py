@@ -25,6 +25,8 @@ class Encoder(object):
         self.BP   = self.BPST - 1
         self.ST   = 0
 
+        self.out = bs.BitArray()
+
     @property
     def Qe(self):
         return np.uint32(self.table.qe)
@@ -98,9 +100,17 @@ class Encoder(object):
             self.output_stacked_xffs()
             self.BP += 1
             self.B = T
+
             # FIXIT workaround for carrying bit
-            if self.B != 0 and not self.Bx: print("OUT", hex(self.B))
-            if self.B != 0 and self.Bx: print("OUT", hex(0))
+            if self.B != 0 and not self.Bx:
+                print("OUT", hex(self.B))
+                self.out.append(hex(self.B))
+            if self.B != 0 and self.Bx:
+                last_entry = int(self.out[-8:].bin, 2)
+                self.out = self.out[:-8]
+                self.out.append(hex(last_entry+1))
+                print(last_entry)
+                self.out.append(bs.BitString(uint=0, length=8))
             self.Bx = False
         else:
             self.ST += 1
@@ -111,13 +121,15 @@ class Encoder(object):
             self.BP += 1
             self.B = 0
             print("OUT", hex(self.B))
+            self.out.append(hex(self.B))
 
 
     def output_stacked_zeros(self):
         while self.ST != 0:
             self.BP += 1
             self.B = 0
-            print("OUT", hex(self.B))
+            print("OUTs", hex(self.B))
+            self.out.append(hex(self.B))
             self.ST -= 1
 
 
@@ -126,9 +138,11 @@ class Encoder(object):
             self.BP += 1
             self.B = 0xFF
             print("OUT", hex(self.B))
+            self.out.append(hex(self.B))
             self.BP += 1
             self.B = 0
             print("OUT", hex(self.B))
+            self.out.append(bs.BitString(uint=0, length=8))
             self.ST -= 1
 
     def flush(self):
