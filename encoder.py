@@ -184,17 +184,28 @@ class Encoder(object):
 
 if __name__ == "__main__":
     import sys
+    import bitstring as bs
     from tests import test
     from tables import JPEGProbabilityTable
 
     ptable = JPEGProbabilityTable()
     enc = Encoder(ptable)
+    fname = './tests/test.raw'
+    oname = fname + '.qmenc'
 
-    # print("\t".join(["EC","D","MPS","CX","{:7}".format("Qe"),
-                     # "{:7}".format("A"),"{:8}".format("C"),"CT","ST","Bx","B"]))
-    for val in test[:int(sys.argv[1])]:
-        # print(enc)
-        enc.encode(val)
+    with open(fname) as f:
+        bits = bs.ConstBitStream(f)
+
+    for val in bits.bin:
+        enc.encode(int(val))
+        print(enc)
+
     enc.flush()
-    print("OUT", "0xff")
-    print("OUT", "0xd9")
+    enc.out.append(hex(0xff))
+    enc.out.append(hex(0xd9))
+    enc.out.append(bs.BitString(uint=0, length=8))
+
+    with open(oname,'wb') as f:
+        enc.out.tofile(f)
+
+    print([enc.out.hex[i:i+8] for i in range(0, len(enc.out.hex), 8)])
