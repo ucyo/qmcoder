@@ -73,13 +73,13 @@ class Decoder(object):
         self.EC += 1
         self.A -= self.Qe
         if not self.Cx < self.A:
-            # print(1, hex(self.C))
             D = self.cond_LPS_exchange()
             self.renorm_d()
-            return
+            return D
         if self.A < self.threequarter:
             D = self.cond_MPS_exchange()
             self.renorm_d()
+            return D
         else:
             D = self.MPS
         return D
