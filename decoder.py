@@ -65,11 +65,12 @@ class Decoder(object):
         if self.B == 0:
             self.C = np.logical_or(C, 0xFF00)
         else:
-            # (interpret marker)
+            pass# (interpret marker)
             # Adjust BP
             # write zeros until end of decoding
 
     def decode(self):
+        self.EC += 1
         self.A -= self.Qe
         if not self.A < self.Cx:
             D = self.cond_LPS_exchange()
@@ -123,3 +124,30 @@ class Decoder(object):
 
     def estimate_qe_after_mps(self):
         self.table.update_using_mps()
+
+    def __repr__(self):
+        str_B = "0x{}".format(hex(self.B)[2:].zfill(2).upper()) if self.B else None
+        result = [self.EC, self.D, self.MPS, self.table.is_exchange_needed,
+                  "0x{}".format(hex(self.Qe)[2:].zfill(5).upper()),
+                  "0x{}".format(hex(self.A)[2:].zfill(5).upper()),
+                  "0x{}".format(hex(self.C)[2:].zfill(8).upper()),
+                  self.CT, str_B
+                  ]
+
+        result = "\t".join([str(x) for x in result])
+        return result
+
+if __name__ == "__main__":
+    import sys
+    from tests import expected
+    from tables import JPEGProbabilityTable
+
+    ptable = JPEGProbabilityTable()
+    dec = Decoder(ptable, expected)
+
+    print("\t".join(["EC","D","MPS","CX","{:7}".format("Qe"),
+                     "{:7}".format("A"),"{:8}".format("C"),"CT","B"]))
+    for val in range(int(sys.argv[1])):
+        print(dec)
+        v = dec.decode()
+        # print(v)
