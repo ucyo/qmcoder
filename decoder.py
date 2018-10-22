@@ -15,7 +15,11 @@ class Decoder(object):
         self.BPST  = 0
         self.BP    = self.BPST - 1
         self.MPS   = 0
+        self.EC    = 1
+        self.D     = 0
+        self.initialization()
 
+    def initialization(self):
         self.byte_in()
         self.C = np.left_shift(self.C, 8)
         self.byte_in()
