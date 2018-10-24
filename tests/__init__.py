@@ -11,4 +11,4 @@ with open(os.path.join(folder, 'test.raw'), 'rb') as f:
 
 with open(os.path.join(folder, 'test.raw.compressed'), 'rb') as f:
     expected = f.read()
-    expected = [int(x) for x in bs.BitArray(test).bin]
+    # expected = [int(x) for x in bs.BitArray(test).bin]
