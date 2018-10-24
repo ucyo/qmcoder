@@ -63,14 +63,15 @@ class Decoder(object):
             self.C += np.left_shift(self.B, 8)
 
     def unstuff_0(self):
-        print('in', self.B)
         self.BP += 1
+        self.B = self.file[0]; self.file = self.file[1:]
         if self.B == 0:
-            self.C = np.logical_or(self.C, 0xFF00)
+            self.C = np.bitwise_or(self.C, 0xff00)
         else:
-            self.C += 0xFF00
-            self.byte_in()
-            pass# (interpret marker)
+            pass
+            # self.C += 0xFF00  # possible source of err (self.Cx - self.A)
+            # self.byte_in()
+            # (interpret marker)
             # Adjust BP
             # write zeros until end of decoding
 
