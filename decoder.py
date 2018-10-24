@@ -142,18 +142,21 @@ class Decoder(object):
         return result
 
 if __name__ == "__main__":
-    import sys
-    import bitstring as bs
-    from tests import expected
     from tables import JPEGProbabilityTable
 
     ptable = JPEGProbabilityTable()
-    dec = Decoder(ptable, expected)
+    fname = './tests/test.raw.compressed'
     oname = './tests/test.raw.qmrecon'
 
 
-    # decompress file to memory
-    for val in range(int(sys.argv[1])):
+    # read compressed file and initialise decompressor
+    with open(fname, 'rb') as f:
+        expected = f.read()
+        dec = Decoder(ptable, expected)
+
+    # reconstruct input from compressed file in memory
+    for val in range(len(expected)*8):
+        print(dec)
         dec.decode()
 
     # write reconstructed file to disk

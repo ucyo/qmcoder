@@ -4,6 +4,8 @@
 Encoder class
 """
 import numpy as np
+import bitstring as bs
+
 
 class Encoder(object):
 
@@ -177,15 +179,12 @@ class Encoder(object):
 
 
 if __name__ == "__main__":
-    import sys
-    import bitstring as bs
-    from tests import test
     from tables import JPEGProbabilityTable
 
     ptable = JPEGProbabilityTable()
     enc = Encoder(ptable)
     fname = './tests/test.raw'
-    oname = fname + '.qmenc'
+    oname = './tests/test.raw.qmenc'
 
     # open file to compress
     with open(fname) as f:
