@@ -69,10 +69,8 @@ class Decoder(object):
             self.C = np.bitwise_or(self.C, 0xff00)
         else:
             pass
-            # self.C += 0xFF00  # possible source of err (self.Cx - self.A)
-            # self.byte_in()
-            # (interpret marker)
-            # Adjust BP
+            # Marker found;
+            # Adjust BP and
             # write zeros until end of decoding
 
     def decode(self):
@@ -153,12 +151,11 @@ if __name__ == "__main__":
     dec = Decoder(ptable, expected)
     oname = './tests/test.raw.qmrecon'
 
-    print("\t".join(["EC","D","MPS","CX","{:7}".format("Qe"),
-                     "{:7}".format("A"),"{:8}".format("C"),"CT","B"]))
 
+    # decompress file to memory
     for val in range(int(sys.argv[1])):
-        print(dec)
         dec.decode()
 
+    # write reconstructed file to disk
     with open(oname, 'wb') as f:
         dec.out.tofile(f)

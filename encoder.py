@@ -101,15 +101,13 @@ class Encoder(object):
             self.BP += 1
             self.B = T
 
-            # FIXIT workaround for carrying bit
+            # Not according to Standard
             if self.B != 0 and not self.Bx:
-                print("OUT", hex(self.B))
                 self.out.append(hex(self.B))
             if self.B != 0 and self.Bx:
                 last_entry = int(self.out[-8:].bin, 2)
                 self.out = self.out[:-8]
                 self.out.append(hex(last_entry+1))
-                print(last_entry)
                 self.out.append(bs.BitString(uint=0, length=8))
             self.Bx = False
         else:
@@ -120,7 +118,6 @@ class Encoder(object):
         if self.B == 0xFF:
             self.BP += 1
             self.B = 0
-            print("OUT", hex(self.B))
             self.out.append(hex(self.B))
 
 
@@ -128,7 +125,6 @@ class Encoder(object):
         while self.ST != 0:
             self.BP += 1
             self.B = 0
-            print("OUTs", hex(self.B))
             self.out.append(hex(self.B))
             self.ST -= 1
 
@@ -137,11 +133,9 @@ class Encoder(object):
         while self.ST != 0:
             self.BP += 1
             self.B = 0xFF
-            print("OUT", hex(self.B))
             self.out.append(hex(self.B))
             self.BP += 1
             self.B = 0
-            print("OUT", hex(self.B))
             self.out.append(bs.BitString(uint=0, length=8))
             self.ST -= 1
 
@@ -193,19 +187,19 @@ if __name__ == "__main__":
     fname = './tests/test.raw'
     oname = fname + '.qmenc'
 
+    # open file to compress
     with open(fname) as f:
         bits = bs.ConstBitStream(f)
 
+    # compress file to memory
     for val in bits.bin:
         enc.encode(int(val))
         print(enc)
 
-    enc.flush()
-    enc.out.append(hex(0xff))
-    enc.out.append(hex(0xd9))
-    enc.out.append(bs.BitString(uint=0, length=8))
-
+    # write compressed stream to disk
     with open(oname,'wb') as f:
+        enc.flush()
+        enc.out.append(hex(0xff))
+        enc.out.append(hex(0xd9))
+        enc.out.append(bs.BitString(uint=0, length=8))
         enc.out.tofile(f)
-
-    print([enc.out.hex[i:i+8] for i in range(0, len(enc.out.hex), 8)])
