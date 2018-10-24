@@ -4,6 +4,7 @@
 Decoder class
 """
 import numpy as np
+import bitstring as bs
 
 class Decoder(object):
 
@@ -17,6 +18,7 @@ class Decoder(object):
         self.MPS   = 0
         self.EC    = 1
         self.D     = 0
+        self.out   = bs.BitArray()
         self.initialization()
 
     def initialization(self):
@@ -78,14 +80,15 @@ class Decoder(object):
         if not self.Cx < self.A:
             D = self.cond_LPS_exchange()
             self.renorm_d()
-            return D
+            self.out.append(bin(D))
+            return
         if self.A < self.threequarter:
             D = self.cond_MPS_exchange()
             self.renorm_d()
-            return D
+            self.out.append(bin(D))
         else:
             D = self.MPS
-        return D
+            self.out.append(bin(D))
 
     def cond_LPS_exchange(self):
         if self.A < self.Qe:
@@ -147,13 +150,14 @@ if __name__ == "__main__":
 
     ptable = JPEGProbabilityTable()
     dec = Decoder(ptable, expected)
+    oname = './tests/test.raw.qmrecon'
 
     print("\t".join(["EC","D","MPS","CX","{:7}".format("Qe"),
                      "{:7}".format("A"),"{:8}".format("C"),"CT","B"]))
 
-    bits = bs.BitArray()
     for val in range(int(sys.argv[1])):
         print(dec)
-        v = dec.decode()
-        bits.append(bin(v))
-    print([bits.hex[i:i+8] for i in range(0,len(bits.hex),8)])
+        dec.decode()
+
+    with open(oname, 'wb') as f:
+        dec.out.tofile(f)
