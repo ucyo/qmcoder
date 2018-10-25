@@ -5,6 +5,7 @@ Decoder class
 """
 import numpy as np
 import bitstring as bs
+from tables import lookuptable
 
 class Decoder(object):
 
@@ -141,18 +142,15 @@ class Decoder(object):
         result = "\t".join([str(x) for x in result])
         return result
 
-if __name__ == "__main__":
-    from tables import JPEGProbabilityTable
 
-    ptable = JPEGProbabilityTable()
-    fname = './tests/test.raw.compressed'
-    oname = './tests/test.raw.qmrecon'
+def decompress(fname, oname, table):
 
+    ptable = lookuptable[table]
 
     # read compressed file and initialise decompressor
     with open(fname, 'rb') as f:
         expected = f.read()
-        dec = Decoder(ptable, expected)
+        dec = Decoder(ptable(), expected)
 
     # reconstruct input from compressed file in memory
     for val in range(len(expected)*8):
@@ -162,3 +160,11 @@ if __name__ == "__main__":
     # write reconstructed file to disk
     with open(oname, 'wb') as f:
         dec.out.tofile(f)
+
+
+if __name__ == "__main__":
+
+    fname = './tests/test.raw.compressed'
+    oname = './tests/test.raw.qmrecon'
+
+    decompress(fname, oname, 'jpeg')

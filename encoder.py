@@ -5,7 +5,7 @@ Encoder class
 """
 import numpy as np
 import bitstring as bs
-
+from tables import lookuptable
 
 class Encoder(object):
 
@@ -178,13 +178,10 @@ class Encoder(object):
         return result
 
 
-if __name__ == "__main__":
-    from tables import JPEGProbabilityTable
+def compress(fname, oname, table):
 
-    ptable = JPEGProbabilityTable()
-    enc = Encoder(ptable)
-    fname = './tests/test.raw'
-    oname = './tests/test.raw.qmenc'
+    ptable = lookuptable[table]
+    enc = Encoder(ptable())
 
     # open file to compress
     with open(fname) as f:
@@ -202,3 +199,11 @@ if __name__ == "__main__":
         enc.out.append(hex(0xd9))
         enc.out.append(bs.BitString(uint=0, length=8))
         enc.out.tofile(f)
+
+
+if __name__ == "__main__":
+
+    fname = './tests/test.raw'
+    oname = './tests/test.raw.qmenc'
+
+    compress(fname, oname, 'jpeg')
