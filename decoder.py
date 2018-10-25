@@ -80,19 +80,24 @@ class Decoder(object):
     def decode(self):
         self.EC += 1
         self.A -= self.Qe
-        self.logger.debug(str(self))
         if not self.Cx < self.A:
             D = self.cond_LPS_exchange()
             self.renorm_d()
             self.out.append(bin(D))
+            self.D = D
+            self.logger.debug(str(self))
             return
         if self.A < self.threequarter:
             D = self.cond_MPS_exchange()
             self.renorm_d()
             self.out.append(bin(D))
+            self.D = D
+            self.logger.debug(str(self))
         else:
             D = self.MPS
             self.out.append(bin(D))
+            self.D = D
+            self.logger.debug(str(self))
 
     def cond_LPS_exchange(self):
         if self.A < self.Qe:
