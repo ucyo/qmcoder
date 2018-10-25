@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 # coding: utf-8
 """
-QM-Encoder.
+QM Coder.
 
-This is a Python implementation of the QM-Encoder.
+This is a Python implementation of the QM Coder.
 
 Usage:
-  qmencoder.py (-c|-d) IN [OUT] [--table=<table>]
-  qmencoder.py -h | --help
-  qmencoder.py --version
+  qmcoder.py (-c|-d) IN [OUT] [--table=<table>]
+  qmcoder.py -h | --help
+  qmcoder.py --version
 
 Options:
   -h --help        Show this screen
