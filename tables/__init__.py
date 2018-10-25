@@ -19,6 +19,7 @@ ILLUSTRIVE_TABLE = pd.read_csv(os.path.join(_bf, 'illustrative.csv'), index_col=
                                )
 
 
+
 class JPEGProbabilityTable(object):
 
     def __init__(self):
@@ -83,3 +84,9 @@ class IllustrativeProbabilityTable(object):
     @property
     def is_exchange_needed(self):
         return self.table['exmps'][self.index]
+
+
+lookuptable = {
+    'jpeg': JPEGProbabilityTable,
+    'illu': IllustrativeProbabilityTable,
+}
