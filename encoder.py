@@ -26,7 +26,7 @@ class Encoder(object):
         self.logger = logging.getLogger(__name__)
 
         # temporary attributes for byte_out()
-        self.BPST = 0
+        self.BPST = 1
         self.BP   = self.BPST - 1
         self.ST   = 0
 
@@ -151,7 +151,7 @@ class Encoder(object):
         self.byte_out()
         self.C = np.left_shift(self.C, 8)
         self.byte_out()
-        self.discard_final_zeros()
+        # self.discard_final_zeros()
 
     def clear_final_bits(self):
         T = self.C + self.A - 1
