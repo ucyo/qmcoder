@@ -6,6 +6,8 @@ Encoder class
 import numpy as np
 import bitstring as bs
 from tables import lookuptable
+import logging
+
 
 class Encoder(object):
 
@@ -21,6 +23,7 @@ class Encoder(object):
         self.ST    = 0
         self.Bx    = False
         self.B     = None
+        self.logger = logging.getLogger(__name__)
 
         # temporary attributes for byte_out()
         self.BPST = 0
@@ -52,6 +55,7 @@ class Encoder(object):
             self.code_lps()
         self.EC += 1    # for printing purposes
         self.D = value  # for printing purposes
+        self.logger.debug(str(self))
 
     def code_lps(self):
         self.A -= self.Qe
@@ -190,7 +194,6 @@ def compress(fname, oname, table):
     # compress file to memory
     for val in bits.bin:
         enc.encode(int(val))
-        print(enc)
 
     # write compressed stream to disk
     with open(oname,'wb') as f:

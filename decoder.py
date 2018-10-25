@@ -6,6 +6,8 @@ Decoder class
 import numpy as np
 import bitstring as bs
 from tables import lookuptable
+import logging
+
 
 class Decoder(object):
 
@@ -21,6 +23,7 @@ class Decoder(object):
         self.D     = 0
         self.out   = bs.BitArray()
         self.initialization()
+        self.logger = logging.getLogger(__name__)
 
     def initialization(self):
         self.byte_in()
@@ -89,6 +92,7 @@ class Decoder(object):
         else:
             D = self.MPS
             self.out.append(bin(D))
+        self.logger.debug(str(self))
 
     def cond_LPS_exchange(self):
         if self.A < self.Qe:
@@ -154,7 +158,6 @@ def decompress(fname, oname, table):
 
     # reconstruct input from compressed file in memory
     for val in range(len(expected)*8):
-        print(dec)
         dec.decode()
 
     # write reconstructed file to disk

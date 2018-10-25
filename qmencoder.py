@@ -24,9 +24,16 @@ from decoder import Decoder, decompress
 from encoder import Encoder, compress
 from tables import lookuptable
 from functools import namedtuple as nt
+import logging
 
+logging.basicConfig(filename='log.log',
+                    filemode='a',
+                    format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+                    datefmt='%H:%M:%S',
+                    level=logging.DEBUG)
 
 def parse_arg(arg):
+    logging.info("Started parsing arguments.")
     ARG = nt('Arguments', 'fname, oname, table, compress')
 
     if arg['--table'] not in lookuptable.keys():
@@ -47,7 +54,6 @@ def parse_arg(arg):
 
 if __name__ == '__main__':
     arg = docopt(__doc__, version="0.1")
-    print(arg)
     arg = parse_arg(arg)
 
     if arg.compress:
