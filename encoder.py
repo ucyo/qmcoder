@@ -27,7 +27,7 @@ class Encoder(object):
 
         # temporary attributes for byte_out()
         self.BPST = 1
-        self.BP   = self.BPST - 1
+        self.BP   = self.BPST - 1  # TODO: is not being used, kick out
         self.ST   = 0
 
         self.out = bs.BitArray()
@@ -106,7 +106,6 @@ class Encoder(object):
             self.output_stacked_xffs()
             self.BP += 1
             self.B = T
-
             # Not according to Standard
             if self.B != 0 and not self.Bx:
                 self.out.append(hex(self.B))

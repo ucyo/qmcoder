@@ -17,13 +17,13 @@ class Decoder(object):
         self.C     = np.uint32(0x0)
         self.A     = np.uint32(0x10000)
         self.BPST  = 0
-        self.BP    = self.BPST - 1
+        self.BP    = self.BPST - 1  # TODO: is not being used, kick out
         self.MPS   = 0
         self.EC    = 1
         self.D     = 0
         self.out   = bs.BitArray()
-        self.initialization()
         self.logger = logging.getLogger(__name__)
+        self.initialization()
 
     def initialization(self):
         self.byte_in()
@@ -60,19 +60,21 @@ class Decoder(object):
 
     def byte_in(self):
         self.BP += 1
-        self.B = self.file[0]; self.file = self.file[1:]
+        self.B = self.file[0]
+        self.file = self.file[1:]
         if self.B == 0xFF:
             self.unstuff_0()
         else:
             self.C += np.left_shift(self.B, 8)
 
     def unstuff_0(self):
+        self.logger.debug('Unstuffing 0s')
         self.BP += 1
         self.B = self.file[0]; self.file = self.file[1:]
         if self.B == 0:
             self.C = np.bitwise_or(self.C, 0xff00)
         else:
-            pass
+            self.logger.debug('Marker set')
             # Marker found;
             # Adjust BP and
             # write zeros until end of decoding
@@ -100,6 +102,7 @@ class Decoder(object):
             self.logger.debug(str(self))
 
     def cond_LPS_exchange(self):
+        self.logger.debug("A >= Cx, %s %s %s", self.A, self.Cx, self.Qe)
         if self.A < self.Qe:
             D = self.MPS
             self.C -= np.left_shift(self.A, 16)
@@ -163,7 +166,10 @@ def decompress(fname, oname, table):
 
     # reconstruct input from compressed file in memory
     for val in range(len(expected)*8):
-        dec.decode()
+        try:
+            dec.decode()
+        except IndexError:
+            break
 
     # write reconstructed file to disk
     with open(oname, 'wb') as f:
