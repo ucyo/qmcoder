@@ -1,0 +1,4 @@
+bitstring==3.1.5
+docopt==0.6.2
+numpy==1.15.1
+pandas==0.23.4
